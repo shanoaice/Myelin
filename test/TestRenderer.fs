@@ -1,4 +1,4 @@
-namespace RazorConsole.Elmish.Test
+namespace Myelin.Test
 
 open System
 open System.Threading.Tasks

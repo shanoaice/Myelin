@@ -1,4 +1,4 @@
-namespace RazorConsole.Elmish.Test
+namespace Myelin.Test
 
 open System.Threading.Tasks
 open Xunit
@@ -6,7 +6,8 @@ open Swensen.Unquote
 open Microsoft.AspNetCore.Components
 open Microsoft.AspNetCore.Components.Rendering
 open Microsoft.AspNetCore.Components.RenderTree
-open RazorConsole.FSharp
+open Myelin
+open Myelin.DSL.RazorConsole
 
 type ViewTestComponent(renderNode: Node) =
     inherit ComponentBase()

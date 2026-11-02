@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This guide explains how `RazorConsole.Elmish` tests declarative view combinators.
+This guide explains how `Myelin` tests declarative view combinators.
 The test suite validates `RenderTreeBuilder` emission without starting a real terminal.
 It uses an in-memory Blazor renderer named `TestRenderer`.
 The tests execute in milliseconds and produce deterministic results.
@@ -161,8 +161,8 @@ test <@ !clicked = true @>
    dotnet test --filter "DisplayName~View.text"
    ```
    The test will fail with the stub exception (Red state).
-3. **Implement in `src/RazorConsole.FSharp/View.fs`:**
-   Write the delegate implementation in [src/RazorConsole.FSharp/View.fs](file:///home/shanoaice/Projects/github/RazorConsole.Elmish/src/RazorConsole.FSharp/View.fs).
+3. **Implement in `src/Myelin.Core/View.fs`:**
+   Write the delegate implementation in [src/Myelin.Core/View.fs](file:///home/shanoaice/Projects/github/RazorConsole.Elmish/src/Myelin.Core/View.fs).
 4. **Run the Test Again:**
    Observe the green bar!
 5. **Reference Check:**

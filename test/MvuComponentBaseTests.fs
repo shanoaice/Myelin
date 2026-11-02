@@ -1,11 +1,11 @@
-module RazorConsole.Elmish.Test.MvuComponentBaseTests
+module Myelin.Test.MvuComponentBaseTests
 
 open System
 open System.Threading.Tasks
 open Xunit
 open Swensen.Unquote
 open Microsoft.AspNetCore.Components.RenderTree
-open RazorConsole.FSharp
+open Myelin
 
 type SimpleModel = { Count: int; Title: string }
 

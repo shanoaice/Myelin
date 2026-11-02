@@ -24,8 +24,8 @@
     <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.2" />
     <PackageReference Include="Unquote" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="10.0.14" />
-    <ProjectReference Include="../src/RazorConsole.FSharp/RazorConsole.FSharp.fsproj" />
-    <ProjectReference Include="../src/RazorConsole.Elmish/RazorConsole.Elmish.fsproj" />
+    <ProjectReference Include="../src/Myelin.Core/Myelin.Core.fsproj" />
+    <ProjectReference Include="../src/Myelin.Elmish/Myelin.Elmish.fsproj" />
   </ItemGroup>
 
 </Project>

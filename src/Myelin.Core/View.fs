@@ -1,8 +1,9 @@
-namespace RazorConsole.FSharp
+namespace Myelin.DSL.RazorConsole
 
 open System
 open Microsoft.AspNetCore.Components
 open Microsoft.AspNetCore.Components.Rendering
+open Myelin
 
 /// <summary>
 /// Declarative view combinators producing sequence-threading <see cref="Node"/> delegates.

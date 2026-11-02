@@ -11,8 +11,8 @@ This document provides a comprehensive architectural investigation into:
 
 1. **Foundational Microsoft Learn References**: Core Blazor architectural concepts (lifecycle, render tree building, synchronization context, event callbacks, custom renderers) for understanding how components work under the hood.
 2. **RazorConsole** (`RazorConsole.Core`): How it hosts Razor components, runs its custom Blazor `Renderer`, translates virtual DOM diffs to Spectre.Console renderables, manages terminal focus and input, and triggers re-renders.
-3. **Elmish Core Internals (`Elmish`)**: Detailed symbol-level analysis of every Elmish core type and module (`Program`, `Dispatch`, `Effect`, `Cmd`, `Sub`, `RingBuffer`, and `Program.runWithDispatch`) needed to write the `RazorConsole.Elmish` binding.
-4. **Bolero Implementation Reference & Ecosystem Comparison**: Concise reference of Bolero's Blazor bridge (`Node` delegate and `ProgramComponent` lifecycle) and why a native `RazorConsole.Elmish` connector is preferred over hosting Bolero directly.
+3. **Elmish Core Internals (`Elmish`)**: Detailed symbol-level analysis of every Elmish core type and module (`Program`, `Dispatch`, `Effect`, `Cmd`, `Sub`, `RingBuffer`, and `Program.runWithDispatch`) needed to write the `Myelin.Elmish` binding.
+4. **Bolero Implementation Reference & Ecosystem Comparison**: Concise reference of Bolero's Blazor bridge (`Node` delegate and `ProgramComponent` lifecycle) and why a native `Myelin.Elmish` connector is preferred over hosting Bolero directly.
 5. **Exhaustive HTML Support Matrix in RazorConsole**: Exactly which tags are translated by RazorConsole's middleware pipeline and how unsupported elements are handled.
 6. **Empirical Performance Benchmarks**: Direct `RenderTreeBuilder` emission vs. Component `RenderFragment` composition, analyzing tree generation speed, partial update penalties, and Amdahl's Law in terminal pipelines.
 7. **Primary Source Citation Index**: Grounded references citing files, symbols, and interfaces across all reviewed repositories without fragile line numbers.
@@ -241,7 +241,7 @@ let map (f: 'a -> 'msg) (cmd: Cmd<'a>) : Cmd<'msg> =
 ```
 
 * **`Cmd.exec` (Internal):** Iterates through the effect list and calls each effect with `dispatch`. Notice that `try ... with` only catches synchronous exceptions thrown while *starting* the effect; asynchronous exceptions inside tasks or async blocks are caught by the `Cmd.OfTask` / `Cmd.OfAsync` builders.
-* **`Cmd.ofEffect`:** Wraps a single `Dispatch<'msg> -> unit` function into a `Cmd<'msg>`. **Binding Use Case:** During component initialization, `RazorConsole.Elmish` uses `Cmd.ofEffect (fun dispatch -> ...)` to capture the live `dispatch` reference from `Program.runWith`.
+* **`Cmd.ofEffect`:** Wraps a single `Dispatch<'msg> -> unit` function into a `Cmd<'msg>`. **Binding Use Case:** During component initialization, `Myelin.Elmish` uses `Cmd.ofEffect (fun dispatch -> ...)` to capture the live `dispatch` reference from `Program.runWith`.
 * **`Cmd.ofMsg`:** Synchronously dispatches `msg` as soon as `Cmd.exec` runs.
 * **`Cmd.map`:** Transforms a child component's `Cmd<'childMsg>` into a parent's `Cmd<'parentMsg>` by composing `f >> dispatch`.
 * **`Cmd.OfFunc` (`either`, `perform`, `attempt`):** Executes a synchronous function `'a -> 'b` inside `try ... with` and dispatches `ofSuccess` or `ofError`.
@@ -443,7 +443,7 @@ let runWithDispatch (syncDispatch: Dispatch<'msg> -> Dispatch<'msg>) (arg: 'arg)
     reentered <- false
 ```
 
-Key mechanics of `runWithDispatch` that govern `RazorConsole.Elmish`:
+Key mechanics of `runWithDispatch` that govern `Myelin.Elmish`:
 
 1. **Re-entrancy Guard (`reentered`):**
    * During startup (`reentered <- true`), `setState`, `Subs.Fx.change`, and `Cmd.exec` run before `processMsgs ()`. Any message dispatched synchronously inside `init`'s `Cmd` (e.g., `Cmd.ofMsg`) is pushed into `rb` without recursively invoking `processMsgs`, and is drained immediately at line `processMsgs ()`.
@@ -463,7 +463,7 @@ Key mechanics of `runWithDispatch` that govern `RazorConsole.Elmish`:
 
 ### 5.1 Bolero Reference Patterns Worth Preserving
 
-While Bolero targets web Blazor, two of its core mechanisms in `Bolero/src/Bolero/` serve as direct implementation references for `RazorConsole.Elmish`:
+While Bolero targets web Blazor, two of its core mechanisms in `Bolero/src/Bolero/` serve as direct implementation references for `Myelin.Elmish`:
 
 1. **Sequence-Threading `Node` and `Attr` Delegates (`Bolero/src/Bolero/NodeTypes.fs` & `Node.fs`):**
 
@@ -480,7 +480,7 @@ While Bolero targets web Blazor, two of its core mechanisms in `Bolero/src/Boler
    * Evaluates `Program.init` and `Program.view` synchronously in `OnInitialized` so the first render batch is populated.
    * Uses `Program.map` to replay `(initModel, binderCmd @ initCmd)` when `Program.runWith` is called in `OnAfterRenderAsync(firstRender = true)`.
 
-### 5.2 Why Native `RazorConsole.Elmish` Instead of Bolero?
+### 5.2 Why Native `Myelin.Elmish` Instead of Bolero?
 
 Bolero cannot be used directly as an idiomatic TUI framework on RazorConsole:
 
@@ -489,9 +489,9 @@ Bolero cannot be used directly as an idiomatic TUI framework on RazorConsole:
 
 ### 5.3 Cross-Connector Comparison Table
 
-| Feature / Dimension | Fable.React / Feliz | Bolero | Elmish.WPF | Avalonia.FuncUI | RazorConsole.Elmish |
+| Feature / Dimension | Fable.React / Feliz | Bolero | Elmish.WPF | Avalonia.FuncUI | Myelin.Elmish (with RazorConsole DSL) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **`'view` Type Parameter** | `ReactElement` | `Bolero.Node` | `Bindings<'model, 'msg>` | `IView` | `RazorConsole.Elmish.Node` |
+| **`'view` Type Parameter** | `ReactElement` | `Bolero.Node` | `Bindings<'model, 'msg>` | `IView` | `Myelin.Node` |
 | **Host Environment** | Browser DOM | Microsoft Blazor (Web) | WPF (`FrameworkElement`) | Avalonia (`ElmishHostControl`) | RazorConsole (`ConsoleRenderer`) |
 | **Intermediate Representation** | React Virtual DOM | Blazor `RenderTreeFrame` array | Direct `DependencyProperty` bindings | FuncUI Virtual Control Tree | Blazor frames -> RazorConsole `VNode` tree |
 | **Diffing & Reconciliation** | React fiber diffing | Blazor `Renderer` (`RenderBatch`) | WPF native layout engine | Custom FuncUI diff/patch engine | Blazor diff -> `ConsoleRenderer` -> `VdomDiffService` |
@@ -541,7 +541,7 @@ If an application outputs an HTML tag not listed above (such as `<section>`, `<a
 
 ## 7. Empirical Performance Benchmark: RenderFragment vs. Direct RenderTreeBuilder
 
-A central architectural question for `RazorConsole.Elmish` is whether the Elmish `view` function should emit a tree of Blazor components via `RenderFragment` delegates, or directly drive `RenderTreeBuilder.OpenElement` inside a single root component.
+A central architectural question for `Myelin.Elmish` is whether the Elmish `view` function should emit a tree of Blazor components via `RenderFragment` delegates, or directly drive `RenderTreeBuilder.OpenElement` inside a single root component.
 
 ### 7.1 Resolution of the Initial Benchmark Anomaly
 

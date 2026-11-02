@@ -1,6 +1,6 @@
-# RazorConsole.FSharp
+# Myelin
 
-F# extensions and reactive UI paradigms for [RazorConsole](https://github.com/shanoaice/RazorConsole).
+Lightweight, high-performance F# reactive UI paradigms and view engines for Microsoft Blazor and [RazorConsole](https://github.com/shanoaice/RazorConsole).
 
 This repository provides sequence-threading view delegates and state-management adapters for terminal applications.
 It renders terminal user interfaces using Microsoft Blazor and Spectre.Console.
@@ -11,9 +11,10 @@ This project decouples view rendering from state management:
 
 | Package | Role | Description |
 | :--- | :--- | :--- |
-| `RazorConsole.FSharp` | Core View Engine | Runtime-agnostic view delegates (`Node`, `Attr`), `MvuComponentBase`, and declarative `View` combinators. |
-| `RazorConsole.Elmish` | State Adapter | Connects upstream `Elmish.Program` to Blazor lifecycles via `ProgramComponent<'model, 'msg>`. |
-| `RazorConsole.Ranvier` *(Planned)* | State Adapter | Planned adapter connecting Ranvier reactive loops to Blazor's dispatcher. |
+| `Myelin.Core` | Core View Engine | Runtime-agnostic view delegates (`Node`, `Attr`), `MvuComponentBase`, and dispatcher synchronization. |
+| `Myelin.Elmish` | State Adapter | Connects upstream `Elmish.Program` to Blazor lifecycles via `ProgramComponent<'model, 'msg>`. |
+| `Myelin.Ranvier` *(Planned)* | State Adapter | Planned adapter connecting Ranvier reactive loops, signals, and memos to Blazor lifecycles. |
+| `Myelin.DSL.RazorConsole` | Terminal View DSL | Declarative terminal view combinators (`View.panel`, `View.rows`, etc.) targeting RazorConsole and Spectre.Console. |
 
 ---
 
@@ -25,8 +26,9 @@ Create an application component inheriting `ProgramComponent`:
 namespace SampleApp
 
 open Elmish
-open RazorConsole.FSharp
-open RazorConsole.Elmish
+open Myelin
+open Myelin.Elmish
+open Myelin.DSL.RazorConsole
 
 type Model = { Count: int }
 
@@ -46,13 +48,13 @@ type CounterComponent() =
             | Decrement -> { model with Count = model.Count - 1 }, Cmd.none
 
         let view model dispatch =
-            Node(fun receiver builder seq ->
-                builder.OpenElement(seq, "div")
-                builder.AddAttribute(seq + 1, "class", "panel")
-                builder.AddAttribute(seq + 2, "data-header", "Counter")
-                builder.AddContent(seq + 3, $"Count: {model.Count}")
-                builder.CloseElement()
-                seq + 4)
+            View.panel "Counter" "rounded" (
+                View.rows [
+                    View.text $"Count: {model.Count}"
+                    View.button "Increment" Increment dispatch
+                    View.button "Decrement" Decrement dispatch
+                ]
+            )
 
         Program.mkSimple init update view
 ```
@@ -71,4 +73,3 @@ let main args =
         .Run()
     0
 ```
-

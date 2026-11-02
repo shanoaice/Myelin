@@ -6,7 +6,7 @@ This study evaluates if RazorConsole can support both [Elmish](https://github.co
 
 **Conclusion:** Supporting both frameworks is highly feasible. 
 
-The view engine in `RazorConsole.Elmish` uses the sequence-threading `Node` delegate.
+The view engine in `Myelin` uses the sequence-threading `Node` delegate.
 This delegate drives `RenderTreeBuilder` directly.
 The view engine does not depend on Elmish.
 Therefore, the view engine can serve both Elmish and Ranvier.
@@ -69,10 +69,10 @@ Decouple the architecture into three layers:
 |                              Application                                 |
 |            (Chooses Elmish MVU or Ranvier Reactive State)                |
 +------------------------------------+-------------------------------------+
-|        RazorConsole.Elmish         |        RazorConsole.Ranvier         |
+|           Myelin.Elmish            |            Myelin.Ranvier           |
 |     (ProgramComponent<'model,'msg>) |     (RanvierComponent / MVU)        |
 +------------------------------------+-------------------------------------+
-|                 RazorConsole.FSharp (Shared Core)                         |
+|              Myelin.DSL.RazorConsole / Myelin.Core (Shared Core)          |
 |     - Node and Attr delegates                                            |
 |     - Declarative View DSL (View.panel, View.rows, View.button, etc.)    |
 |     - RenderTreeBuilder helpers                                          |
@@ -81,12 +81,12 @@ Decouple the architecture into three layers:
 +--------------------------------------------------------------------------+
 ```
 
-1. **`RazorConsole.FSharp` (or `RazorConsole.View`):**
+1. **`Myelin.Core` & `Myelin.DSL.RazorConsole`:**
    Holds `Node`, `Attr`, and the terminal layout DSL (`View.panel`, `View.rows`, `View.button`).
-2. **`RazorConsole.Elmish`:**
-   References the shared core and `Elmish`.
+2. **`Myelin.Elmish`:**
+   References `Myelin.Core` and `Elmish`.
    Provides `ProgramComponent<'model, 'msg>`.
-3. **`RazorConsole.Ranvier`:**
+3. **`Myelin.Ranvier`:**
    References the shared core and `Ranvier`.
    Provides `RanvierComponent` and `RanvierMvuComponent`.
 
@@ -153,7 +153,7 @@ type RanvierComponent() =
 
 ## 6. Recommendations
 
-1. Keep the current `RazorConsole.Elmish` implementation intact.
+1. Keep the current `Myelin.Elmish` implementation intact.
 2. Extract `Node`, `Attr`, and future `View` DSL modules into a shared base layer.
 3. Prototype a `RanvierComponent` in `.dsh-scratch/` to verify live terminal updates.
 4. Add `RazorConsole.Ranvier` once the View DSL stabilizes.

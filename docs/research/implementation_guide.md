@@ -1,6 +1,6 @@
-# RazorConsole.Elmish: Implementation Guide & TDD Handbook
+# Myelin: Implementation Guide & TDD Handbook
 
-This handbook is the practical development reference for implementing **`RazorConsole.Elmish`**. It contains architectural contracts, the step-by-step implementation roadmap, performance engineering guidelines, and the Test-Driven Development (TDD) progression.
+This handbook is the practical development reference for implementing **`Myelin`** (`Myelin.Core`, `Myelin.Elmish`, `Myelin.DSL.RazorConsole`). It contains architectural contracts, the step-by-step implementation roadmap, performance engineering guidelines, and the Test-Driven Development (TDD) progression.
 
 > ℹ️ For the foundational research on Elmish core, Bolero, and RazorConsole internals, see [elmish_razorconsole_architecture.md](elmish_razorconsole_architecture.md).
 
@@ -13,7 +13,7 @@ Following Bolero's design (`Bolero/src/Bolero/NodeTypes.fs` and `Components.fs`)
 ### 1.1 Core View Delegates (`Node` and `Attr`)
 
 ```fsharp
-namespace RazorConsole.Elmish
+namespace Myelin
 
 open Microsoft.AspNetCore.Components.Rendering
 
@@ -237,7 +237,7 @@ type HostBuilderExtensions =
 
 ### Phase 1: Project Setup & Dependencies
 
-* Create an F# class library project (`RazorConsole.Elmish`) targeting `.NET 8.0` or `.NET 9.0`.
+* Create F# class library projects (`Myelin.Core`, `Myelin.Elmish`) targeting `.NET 8.0` or `.NET 9.0`.
 * Add package references to `Elmish`, `Microsoft.AspNetCore.Components`, and reference `RazorConsole.Core`.
 * Create a companion console app (`samples/CounterApp`) to exercise each milestone interactively.
 

@@ -1,4 +1,4 @@
-module RazorConsole.Elmish.Test.ProgramComponentTests
+module Myelin.Test.ProgramComponentTests
 
 open System
 open System.Threading.Tasks
@@ -6,7 +6,8 @@ open Xunit
 open Swensen.Unquote
 open Elmish
 open Microsoft.AspNetCore.Components.RenderTree
-open RazorConsole.Elmish
+open Myelin
+open Myelin.Elmish
 
 type CounterModel = { Count: int; Label: string }
 

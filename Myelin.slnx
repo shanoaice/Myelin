@@ -5,8 +5,8 @@
     <File Path="docs/research/ranvier_elmish_feasibility_study.md" />
     <File Path="docs/reference/View.fs" />
   </Folder>
-  <Project Path="test/RazorConsole.FSharp.Test.fsproj" />
-  <Project Path="benchmarks/RazorConsole.Elmish.Benchmarks.fsproj" />
-  <Project Path="src/RazorConsole.FSharp/RazorConsole.FSharp.fsproj" />
-  <Project Path="src/RazorConsole.Elmish/RazorConsole.Elmish.fsproj" />
+  <Project Path="test/Myelin.Test.fsproj" />
+  <Project Path="benchmarks/Myelin.Benchmarks.fsproj" />
+  <Project Path="src/Myelin.Core/Myelin.Core.fsproj" />
+  <Project Path="src/Myelin.Elmish/Myelin.Elmish.fsproj" />
 </Solution>

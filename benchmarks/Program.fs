@@ -1,4 +1,4 @@
-namespace RazorConsole.Elmish.Benchmarks
+namespace Myelin.Benchmarks
 
 #nowarn "0044" "0057"
 
@@ -97,7 +97,6 @@ and [<MemoryDiagnoser>] RazorConsoleBenchmark() =
     let mutable directRenderer: Renderer = Unchecked.defaultof<_>
     let mutable compRoot: ComponentRootComponent = Unchecked.defaultof<_>
     let mutable directRoot: DirectElementRootComponent = Unchecked.defaultof<_>
-
     let mutable compFullTick = 0
     let mutable directFullTick = 0
     let mutable compPartialTick = 0

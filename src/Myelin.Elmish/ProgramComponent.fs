@@ -1,9 +1,9 @@
-namespace RazorConsole.Elmish
+namespace Myelin.Elmish
 
 open System
 open System.Threading.Tasks
 open Elmish
-open RazorConsole.FSharp
+open Myelin
 
 [<AbstractClass>]
 type ProgramComponent<'model, 'msg>() =

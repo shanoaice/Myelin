@@ -1,9 +1,9 @@
-namespace RazorConsole.FSharp.Reference
+namespace Myelin.DSL.RazorConsole.Reference
 
 open System
 open Microsoft.AspNetCore.Components
 open Microsoft.AspNetCore.Components.Rendering
-open RazorConsole.FSharp
+open Myelin
 
 /// <summary>
 /// Reference implementation of declarative view combinators producing sequence-threading <see cref="Node"/> delegates.

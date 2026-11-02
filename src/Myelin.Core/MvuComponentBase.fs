@@ -1,4 +1,4 @@
-namespace RazorConsole.FSharp
+namespace Myelin
 
 open System
 open System.Threading
